@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "minVersion": "0.7.10",
+  "package": "net.eofitg.hurtcam.mixin",
+  "refmap": "mixin.hurtcam.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "EntityRendererMixin"
+  ]
+}

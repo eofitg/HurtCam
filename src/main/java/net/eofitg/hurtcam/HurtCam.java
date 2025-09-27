@@ -1,0 +1,68 @@
+package net.eofitg.hurtcam;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.eofitg.hurtcam.command.HurtCamCommand;
+import net.eofitg.hurtcam.config.HurtCamConfig;
+import net.eofitg.hurtcam.util.Reference;
+import net.minecraft.command.ICommand;
+import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.util.Arrays;
+
+@Mod(
+        modid = Reference.MOD_ID,
+        name = Reference.MOD_NAME,
+        version = Reference.MOD_VERSION,
+        acceptedMinecraftVersions = "[1.8.9]",
+        clientSideOnly = true
+)
+public class HurtCam {
+
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static File configFile = null;
+    public static HurtCamConfig config;
+
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent e) {
+        configFile = new File(e.getModConfigurationDirectory(), "hurtcam.json");
+        loadConfig();
+        Runtime.getRuntime().addShutdownHook(new Thread(HurtCam::saveConfig));
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent e) {
+        registerCommands(new HurtCamCommand());
+    }
+
+    private void registerCommands(ICommand... commands) {
+        Arrays.stream(commands).forEachOrdered(ClientCommandHandler.instance::registerCommand);
+    }
+
+    public static void loadConfig() {
+        if (configFile == null) return;
+        if (configFile.exists()) {
+            try {
+                String json = FileUtils.readFileToString(configFile);
+                config = gson.fromJson(json, HurtCamConfig.class);
+            } catch (Exception ignored) {}
+        } else {
+            config = new HurtCamConfig();
+            saveConfig();
+        }
+    }
+
+    public static void saveConfig() {
+        if (configFile == null) return;
+        try {
+            String json = gson.toJson(config);
+            FileUtils.write(configFile, json);
+        } catch (Exception ignored) {}
+    }
+
+}

@@ -1,0 +1,11 @@
+[
+{
+  "modid": "hurtcam",
+  "name": "HurtCam",
+  "description": "A Minecraft 1.8.9 Forge mod that allows you to customize the hurt cam multiplier",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://github.com/eofitg/HurtCam",
+  "authorList": ["eofitg"]
+}
+]
